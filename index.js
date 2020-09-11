@@ -1,7 +1,16 @@
 console.log('hello world')
 const express = require('express'),
+    morgan = require('morgan')
     app = express()
 app.use(express.json())
+cors= require('cors')
+app.use(cors())
+
+morgan.token('body',(req,res)=>{
+    console.log(req.body)
+    return JSON.stringify(req.body)
+})
+app.use(morgan(':method :url :status :res[content-length] - :response-time ms :body'))
 
 let persons = [{
     name: "Arto Hellas",
@@ -52,9 +61,7 @@ app.delete('/api/persons/:id', (req, res) => {
 })
 
 app.post('/api/persons', (req, res) => {
-    const name = req.body.name
-
-    if (persons.find(p => p.name === name)) {
+    if (persons.find(p => p.name === req.body.name)) {
         // Name already exists
         res.json({error: 'name must be unique'})
     } else if (!req.body.name || !req.body.number) {
@@ -62,8 +69,6 @@ app.post('/api/persons', (req, res) => {
     } else {
 
         const person = {name: req.body.name, number: String(req.body.number), id: Math.floor(Math.random() * 100000)}
-        console.log(typeof person)
-        console.log(person)
         persons.push(person)
         res.json(person)
     }
@@ -72,5 +77,5 @@ app.post('/api/persons', (req, res) => {
 })
 
 
-const PORT = 3001
-app.listen(PORT)
+const PORT = process.env.PORT || 3001
+app.listen(PORT, ()=>console.log(`Server running on ${PORT}`))
