@@ -1,7 +1,9 @@
-console.log('hello world')
+
 const express = require('express'),
+
     morgan = require('morgan')
     app = express()
+app.use(express.static('build'))
 app.use(express.json())
 cors= require('cors')
 app.use(cors())
@@ -34,9 +36,9 @@ let persons = [{
     }
 ]
 
-app.get('/', (req, res) => {
-    res.send('<h1>Hello World!</h1>')
-})
+// app.get('/', (req, res) => {
+//     res.send('<h1>Hello World!</h1>')
+// })
 
 
 app.get('/api/persons', (req, res) => {
